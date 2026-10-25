@@ -21,6 +21,10 @@
     <section class="screen" id="startScreen">
       <h1 class="title">Flappy<br>Bat</h1>
       <p class="tagline">Dodge the jack-o'-lanterns. Don't touch the graves.</p>
+      <label class="name">
+        <span class="label">Your name</span>
+        <input id="nameInput" type="text" maxlength="24" placeholder="Pumpkin" autocomplete="off" spellcheck="false">
+      </label>
       <button class="btn" id="startBtn" type="button">Play</button>
       <p class="hint">Space / Click / Tap to flap</p>
       <p class="best">Best: <span id="bestStart">0</span></p>
@@ -33,6 +37,7 @@
         <div><span class="label">Best</span><span class="value" id="bestOver">0</span></div>
       </div>
       <p class="newbest" id="newBest" hidden>New best!</p>
+      <ol class="board" id="board" hidden></ol>
       <button class="btn" id="retryBtn" type="button">Try again</button>
       <p class="hint">or press Space</p>
     </section>

@@ -31,7 +31,69 @@
     pauseBtn: $("pauseBtn"), resumeBtn: $("resumeBtn"),
     bestStart: $("bestStart"), bestOver: $("bestOver"),
     finalScore: $("finalScore"), newBest: $("newBest"),
+    nameInput: $("nameInput"), board: $("board"),
   };
+
+  // ---------- leaderboard API (optional: the game works without it) ----------
+  // Point at another server with ?api=https://example.com
+  const API = (new URLSearchParams(location.search).get("api") || "http://localhost:3000").replace(/\/$/, "");
+  const NAME_KEY = "flappy-bat-name";
+
+  function playerName() {
+    return ui.nameInput.value.trim().slice(0, 24);
+  }
+  try { ui.nameInput.value = localStorage.getItem(NAME_KEY) || ""; } catch { /* ignore */ }
+  ui.nameInput.addEventListener("input", () => {
+    try { localStorage.setItem(NAME_KEY, playerName()); } catch { /* ignore */ }
+  });
+
+  async function api(path, options) {
+    const res = await fetch(API + path, { ...options, signal: AbortSignal.timeout(4000) });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    return res.json();
+  }
+
+  function renderBoard(rows, me) {
+    ui.board.replaceChildren();
+    if (!rows) { addNote("Leaderboard offline"); return; }
+    if (!rows.length) { addNote("No scores yet"); return; }
+    rows.forEach((r, i) => {
+      const li = document.createElement("li");
+      if (me && r.playerName.toLowerCase() === me.toLowerCase()) li.className = "me";
+      const rank = document.createElement("span"); rank.textContent = (i + 1) + ".";
+      const who = document.createElement("span"); who.className = "who"; who.textContent = r.playerName;
+      const pts = document.createElement("span"); pts.className = "pts"; pts.textContent = r.score;
+      li.append(rank, who, pts);
+      ui.board.append(li);
+    });
+    ui.board.hidden = false;
+
+    function addNote(text) {
+      const li = document.createElement("li");
+      li.className = "note"; li.textContent = text;
+      ui.board.append(li);
+      ui.board.hidden = false;
+    }
+  }
+
+  // Submit (when there is a name and a score) and then show the top 5.
+  async function submitAndLoadBoard(score) {
+    const name = playerName();
+    ui.board.hidden = true;
+    try {
+      if (name && score > 0) {
+        await api("/api/scores", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ playerName: name, score }),
+        });
+      }
+      const data = await api("/api/scores?limit=5");
+      if (state.mode === "over") renderBoard(data.leaderboard, name);
+    } catch {
+      if (state.mode === "over") renderBoard(null);
+    }
+  }
 
   // ---------- best score (localStorage may be blocked) ----------
   const BEST_KEY = "flappy-bat-best";
@@ -95,6 +157,7 @@
   // ---------- flow ----------
   function startGame() {
     reset();
+    ui.nameInput.blur();
     state.mode = "playing";
     spawnPillar(W + 60);
     show(ui.start, false); show(ui.over, false); show(ui.pause, false);
@@ -143,6 +206,7 @@
     show(ui.hud, false);
     show(ui.over, true);
     ui.retryBtn.focus({ preventScroll: true });
+    submitAndLoadBoard(state.score);
   }
 
   function togglePause() {
@@ -167,6 +231,11 @@
   }
 
   window.addEventListener("keydown", (e) => {
+    // Let the name field take normal typing; Enter there starts the game.
+    if (e.target === ui.nameInput) {
+      if (e.code === "Enter" && state.mode === "ready") startGame();
+      return;
+    }
     if (e.code === "Space" || e.code === "ArrowUp" || e.code === "KeyW") {
       e.preventDefault();
       if (e.repeat) return;
@@ -180,7 +249,7 @@
   // Clicking the overlay background (not its buttons) also flaps / restarts.
   for (const scr of [ui.start, ui.over]) {
     scr.addEventListener("pointerdown", (e) => {
-      if (e.target.closest("button")) return;
+      if (e.target.closest("button, label, input")) return;
       e.preventDefault();
       primaryAction();
     });

@@ -13,6 +13,15 @@ Open `index.html` in a browser (or run `python -m http.server` and visit http://
 
 The game speeds up as you score, and your best score is saved in the browser.
 
+Enter a name on the start screen and your score is sent to the API when the game ends. The Game Over screen then shows the top 5. If the API is not running, the game still works and the leaderboard shows "offline". The frontend looks for the API at `http://localhost:3000`; add `?api=https://your-server` to the page URL to use another one.
+
+To play with the leaderboard, run both:
+
+```sh
+npm start                       # API on :3000
+python -m http.server 8000      # game on :8000
+```
+
 Frontend files:
 
 - `index.html` – page and menus
