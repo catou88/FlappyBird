@@ -1,0 +1,189 @@
+:root {
+  --night: #0f0718;
+  --purple: #2b1240;
+  --pumpkin: #ff7a1a;
+  --pumpkin-dark: #c4510a;
+  --bone: #f3ead2;
+  --slime: #9be564;
+  --ink: #120a1c;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: radial-gradient(circle at 50% 30%, #2a1140 0%, var(--night) 70%);
+  color: var(--bone);
+  font-family: "Rubik", system-ui, sans-serif;
+  overflow: hidden;
+  touch-action: manipulation;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+body {
+  display: grid;
+  place-items: center;
+}
+
+/* Game keeps a 9:16 shape and fits the window. */
+.stage {
+  position: relative;
+  width: min(100vw, 100vh * 9 / 16, 100dvh * 9 / 16, 506px);
+  aspect-ratio: 9 / 16;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: 0 0 0 3px var(--ink), 0 0 60px rgba(255, 122, 26, .25);
+}
+
+@media (max-width: 520px) {
+  .stage { border-radius: 0; box-shadow: none; }
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.hud {
+  position: absolute;
+  top: 6%;
+  left: 0;
+  right: 0;
+  text-align: center;
+  pointer-events: none;
+}
+
+.score {
+  font-family: "Rubik", sans-serif;
+  font-weight: 800;
+  font-size: clamp(40px, 9vh, 72px);
+  color: var(--bone);
+  -webkit-text-stroke: 3px var(--ink);
+  paint-order: stroke fill;
+  text-shadow: 0 4px 0 var(--ink);
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 24px;
+  text-align: center;
+  background: linear-gradient(to bottom, rgba(15, 7, 24, .35), rgba(15, 7, 24, .65));
+  animation: fade .25s ease-out;
+}
+
+.screen.dim { background: rgba(15, 7, 24, .7); }
+.screen[hidden], .hud[hidden], .pause[hidden], .newbest[hidden] { display: none; }
+
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+
+.title {
+  margin: 0;
+  font-family: "Creepster", cursive;
+  font-weight: 400;
+  font-size: clamp(56px, 13vh, 104px);
+  line-height: .9;
+  letter-spacing: 2px;
+  color: var(--pumpkin);
+  text-shadow: 0 5px 0 var(--ink), 0 0 30px rgba(255, 122, 26, .55);
+  animation: float 2.4s ease-in-out infinite;
+}
+
+.title.small { font-size: clamp(48px, 10vh, 84px); }
+
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-8px) rotate(2deg); }
+}
+
+.tagline {
+  margin: 0;
+  max-width: 26ch;
+  font-size: 15px;
+  opacity: .85;
+}
+
+.btn {
+  margin-top: 8px;
+  padding: 14px 40px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--ink);
+  background: var(--pumpkin);
+  border: 3px solid var(--ink);
+  border-radius: 14px;
+  box-shadow: 0 6px 0 var(--ink);
+  cursor: pointer;
+  transition: transform .08s, box-shadow .08s, background .15s;
+}
+
+.btn:hover { background: #ff9440; }
+.btn:active { transform: translateY(4px); box-shadow: 0 2px 0 var(--ink); }
+.btn:focus-visible { outline: 3px solid var(--slime); outline-offset: 3px; }
+
+.hint {
+  margin: 0;
+  font-size: 13px;
+  opacity: .65;
+}
+
+.best {
+  margin: 0;
+  font-weight: 800;
+  color: var(--slime);
+}
+
+.card {
+  display: flex;
+  gap: 28px;
+  padding: 16px 28px;
+  background: var(--bone);
+  color: var(--ink);
+  border: 3px solid var(--ink);
+  border-radius: 16px;
+  box-shadow: 0 6px 0 var(--ink);
+}
+
+.card div { display: flex; flex-direction: column; align-items: center; }
+.label { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: var(--pumpkin-dark); font-weight: 800; }
+.value { font-size: 40px; font-weight: 800; }
+
+.newbest {
+  margin: 0;
+  font-weight: 800;
+  color: var(--slime);
+  animation: pulse .6s ease-in-out infinite alternate;
+}
+
+@keyframes pulse { to { transform: scale(1.12); } }
+
+.pause {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  font-family: "Rubik", sans-serif;
+  font-weight: 800;
+  color: var(--bone);
+  background: rgba(18, 10, 28, .6);
+  border: 2px solid rgba(243, 234, 210, .4);
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title, .newbest { animation: none; }
+}
