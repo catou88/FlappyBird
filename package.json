@@ -1,0 +1,15 @@
+{
+  "name": "halloween-flappy-bird-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Score and leaderboard API for Halloween Flappy Bird",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
