@@ -32,8 +32,15 @@ echo "Synchronizing with origin/main..."
 git -C "$REPO_ROOT" fetch origin main
 git -C "$REPO_ROOT" reset --mixed origin/main
 
-echo "Removing local files except $SCRIPT_NAME..."
+echo "Removing local files except $SCRIPT_NAME and root-level SpacetimeDB paths..."
 while IFS= read -r -d '' entry; do
+  entry_name="$(basename "$entry")"
+  case "$entry_name" in
+    spacetime*|.spacetime*)
+      echo "Preserving SpacetimeDB path: $entry_name"
+      continue
+      ;;
+  esac
   rm -rf -- "$entry"
 done < <(
   find "$REPO_ROOT" -mindepth 1 -maxdepth 1 \
@@ -58,4 +65,4 @@ while IFS=$'\t' read -r _ ref; do
   fi
 done < <(git -C "$REPO_ROOT" ls-remote --heads origin)
 
-echo "Repository cleared. Only $SCRIPT_NAME remains on main."
+echo "Repository cleared. $SCRIPT_NAME and root-level SpacetimeDB paths remain on main."
