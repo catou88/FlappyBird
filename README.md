@@ -1,6 +1,6 @@
-# Halloween Flappy Bird backend
+# Halloween Flappy Bird
 
-A small, dependency-free Node.js API for saving game scores and serving a leaderboard.
+A Halloween-themed Flappy Bird game. This repository currently includes a small, dependency-free Node.js API for saving game scores and serving a leaderboard.
 
 ## Run locally
 
