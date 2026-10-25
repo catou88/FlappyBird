@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Flappy Bat</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦇</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Rubik:wght@500;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="stage" id="stage">
+    <canvas id="game" aria-label="Flappy Bat game"></canvas>
+
+    <div class="hud" id="hud" hidden>
+      <span class="score" id="score">0</span>
+    </div>
+
+    <section class="screen" id="startScreen">
+      <h1 class="title">Flappy<br>Bat</h1>
+      <p class="tagline">Dodge the jack-o'-lanterns. Don't touch the graves.</p>
+      <button class="btn" id="startBtn" type="button">Play</button>
+      <p class="hint">Space / Click / Tap to flap</p>
+      <p class="best">Best: <span id="bestStart">0</span></p>
+    </section>
+
+    <section class="screen" id="overScreen" hidden>
+      <h2 class="title small">Game<br>Over</h2>
+      <div class="card">
+        <div><span class="label">Score</span><span class="value" id="finalScore">0</span></div>
+        <div><span class="label">Best</span><span class="value" id="bestOver">0</span></div>
+      </div>
+      <p class="newbest" id="newBest" hidden>New best!</p>
+      <button class="btn" id="retryBtn" type="button">Try again</button>
+      <p class="hint">or press Space</p>
+    </section>
+
+    <button class="pause" id="pauseBtn" type="button" aria-label="Pause" hidden>II</button>
+    <section class="screen dim" id="pauseScreen" hidden>
+      <h2 class="title small">Paused</h2>
+      <button class="btn" id="resumeBtn" type="button">Resume</button>
+      <p class="hint">P to pause / resume</p>
+    </section>
+  </main>
+
+  <script src="game.js"></script>
+</body>
+</html>
